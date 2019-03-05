@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Oil Prices</title>
+    <link rel="icon" type="image/png" href="./OilMap_files/vzla.png" sizes="16x16">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="assets/leaflet-0.7.7/leaflet.css" rel="stylesheet" />
+    <link href="assets/leaflet.markercluster/MarkerCluster.css" rel="stylesheet" />
+    <link href="assets/leaflet.markercluster/MarkerCluster.Default.css" rel="stylesheet" />
+
+</head>
+<body>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        
+        html,
+        body,
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .leaflet-popup-content {
+            margin: 7px;
+        }
+        
+        a {
+            text-decoration: none;
+        }
+    </style>
+
+    <div id="map"></div>
+
+    <script src="assets/leaflet-0.7.7/leaflet.js"></script>
+    <script src="assets/leaflet.markercluster/leaflet.markercluster.js"></script>
+    <script src="assets/tabletop.js"></script>
+
+    <script>
+    
+        document.addEventListener('DOMContentLoaded', function() {
+
+            //https://docs.google.com/spreadsheets/d/12QEiwF0fxUXct_v1gWm2OCwsL7dnrxTXZkyvh3O3jrI/pubhtml  
+
+            Tabletop.init({
+                key: '1sBdyFA9e2V6gKv875NihdwAHHdHhMvbw2qEDn2OVZBI',
+                callback: function(sheet, tabletop) {
+                    for (var i in sheet) {
+                        var data = sheet[i]; //getting e row from table
+
+                        var content = '<b>Area: </b>' + data.AREA +
+                            '</br>' + '<b>Price: </b>' + data.PRICE +  '<b> $USD/Barrel</b>'  +
+                            '</br>' +'<b>Update: </b>' + data.UPDATE +
+                            '</br>';
+                        var point = L.marker([data.Y, data.X], {
+                            icon: mki,
+                            title: data.blend,
+                            riseOnHover: true
+                        }).bindPopup(content);
+                        markerClusters.addLayer(point);
+                        map.addLayer(markerClusters);
+                    }
+                },
+                simpleSheet: true
+            });
+
+             var layerMapbox = new L.tileLayer('https://api.mapbox.com/styles/v1/roqueleal/cjsw2utru068x1fqmjlolpa30/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoicm9xdWVsZWFsIiwiYSI6ImNqaHVzZTA4ODBkZjczdmt0cTNrbGo1ZWEifQ.m7xOPPWAFsY-A4cAr5nDAw', {
+                attribution: '&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a> &copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
+            });
+           
+            var map = new L.map('map', {
+                minZoom: 2,
+                maxZoom: 18,
+                layers: [layerMapbox]
+            });
+            
+
+            var markerClusters = new L.MarkerClusterGroup({
+                spiderfyOnMaxZoom: true,
+                showCoverageOnHover: false,
+                zoomToBoundsOnClick: true,
+                disableClusteringAtZoom: 16
+            });
+
+            var mki = new L.icon({
+                iconUrl: 'data/barrel.png',
+                iconAnchor: [16, 16],
+                popupAnchor: [0, -16]
+            })
+            map.fitBounds([
+                [85, -180],
+                [-85, 180]
+            ]);
+
+            var baseMaps = {
+                "Mapbox Streets": layerMapboxStreets,
+                "Mapbox Imagery": layerMapboxImagery
+            };
+
+            L.control.layers(baseMaps, null, {
+                collapsed: false
+            }).addTo(map);
+        });
+    </script>
+</body>
+</html>
