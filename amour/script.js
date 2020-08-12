@@ -31,7 +31,7 @@ function init() {
 			container.addChild(heart);
 		}
 
-  var text = new createjs.Text("El amor pone sus pruebas para saber\nsi efectivamente nos queremos\nsólo descubriremos ese mensaje \nsi nuestros corazones siguen latiendo...\nTe ama Leo...", "bold 32px Helvetica", "#312");
+  var text = new createjs.Text("El amor pone sus pruebas para saber\nsi realmente nos queremos\nsólo descubriremos ese mensaje \nsi nuestros corazones siguen latiendo...\nTe ama Leo...", "bold 50px Helvetica", "#312");
   text.textAlign = "center";
   text.x = w / 2;
   text.y = h / 2 - text.getMeasuredLineHeight();
